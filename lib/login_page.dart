@@ -1,14 +1,22 @@
+// login_page.dart
 import 'package:flutter/material.dart';
+import 'splash_screen.dart';
 import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
 
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  String correctEmail = 'Afri';
+  String correctPassword = 'afriza123';
+
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -16,14 +24,14 @@ class _LoginPageState extends State<LoginPage> {
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         radius: 48.0,
-        child: Image.asset('images/download (5).png'),
+        child: Image.asset('images/logo.jpg'),
       ),
     );
 
     final email = TextFormField(
+      controller: _emailController,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
-      initialValue: 'Afrizafirmansyah.com',
       decoration: InputDecoration(
         hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -32,8 +40,8 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final password = TextFormField(
+      controller: _passwordController,
       autofocus: false,
-      initialValue: 'afriza123',
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Password',
@@ -52,7 +60,14 @@ class _LoginPageState extends State<LoginPage> {
           minWidth: 200.0,
           height: 42.0,
           onPressed: () {
-            Navigator.of(context).pushNamed(HomePage.tag);
+            String email = _emailController.text.trim();
+            String password = _passwordController.text.trim();
+
+            if (email == correctEmail && password == correctPassword) {
+              Navigator.of(context).pushNamed(SplashScreen.tag);
+            } else {
+              _showErrorDialog();
+            }
           },
           color: Colors.lightBlueAccent,
           child: Text(
@@ -61,14 +76,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-    );
-
-    final forgotLabel = ElevatedButton(
-      child: Text(
-        'Forgot Password',
-        style: TextStyle(color: Colors.black54),
-      ),
-      onPressed: () {},
     );
 
     return Scaffold(
@@ -85,10 +92,29 @@ class _LoginPageState extends State<LoginPage> {
             password,
             SizedBox(height: 24.0),
             loginButton,
-            forgotLabel
           ],
         ),
       ),
+    );
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Login Failed'),
+          content: Text('Incorrect email or password. Please try again.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
